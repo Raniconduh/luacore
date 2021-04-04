@@ -1,11 +1,14 @@
 #!/usr/bin/env lua
-if #arg < 2 then
-	io.stderr:write("mv: not enough arguments given\n")
-	io.stderr:write("Usage: mv source destination\n")
-	os.exit(1)
+function help()
+	print("Usage: mv source... destination")
+	print("If the destination is a directory and multiple source files are given or the source file is not a directory, move the source files into that directory")
+	print("Otherwise move the source file to the specified location")
 end
 
-
+if #arg < 2 then
+	help()
+	os.exit(1)
+end
 local sys_stat = require("posix.sys.stat")
 
 
@@ -36,6 +39,10 @@ end
 
 -- move all arguments
 for i = 1, #arg - 1 do
+	if arg[i] == "-h" or arg[i] == "--help" then
+		help()
+		os.exit(0)
+	end
 	if not exists(arg[i]) then
 		io.stderr:write("mv: "..arg[i]..": no such file or directory\n")
 		goto continue -- go to top of loop - this file doesn't exist

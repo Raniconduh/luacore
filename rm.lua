@@ -1,7 +1,13 @@
 #!/usr/bin/env lua
+function help()
+	print("Usage: rm file...")
+	print("Remove the specified file(s)")
+	print("\nOptions:")
+	print("  -r    Recursively remove directory")
+	print("  -f    Do not show errors")
+end
 if #arg < 1 then
-	io.stderr:write("rm: not enough arguments\n")
-	io.stderr:write("Usage: rm file [files...]\n")
+	help()
 	os.exit(1)
 end
 
@@ -13,7 +19,7 @@ prog_return = 0
 
 
 function is_dir(path)
-	return sys_stat.S_ISDIR(sys_stat.lstat(path).st_mode)
+	return sys_stat.S_ISDIR(sys_stat.lstat(path).st_mode) == 1
 end
 
 function exists(path)
@@ -29,6 +35,7 @@ function rm(name)
 	if exists(name) then
 		remove_status = 0
 		dir = is_dir(name)
+
 		if dir and recursive then
 			remove_status = os.remove(name)
 		elseif dir and not recursive and not force then
@@ -56,6 +63,10 @@ to_remove = {}
 
 -- handle arguments
 for i = 1, #arg do
+	if arg[i] == "-h" or arg[i] == "--help" then
+		help()
+		os.exit(0)
+	end
 	-- handle arguments
 	if arg[i]:sub(1, 1) == "-" then
 		for j = 2, #arg[i] do

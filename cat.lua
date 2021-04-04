@@ -23,10 +23,29 @@ function cat(file_name)
 	file:close()
 end
 
+
+to_cat = {}
+
+function help()
+	print("Usage: cat [file]...")
+	print("Concatenate files to stdout")
+	print("if no file or file is '-' then read from stdin")
+	print("\nExample: cat file.c - second_file")
+	print("The example will cat file.c first, then stdin, then second_file")
+end
+
 -- loop through arguments and cat them all
-cur_file = 1
-while cur_file < #arg + 1 do
-	cat(arg[cur_file])
-	cur_file = cur_file + 1
+for i = 1, #arg do
+	if arg[i] == "-h" or arg[i] == "--help" then
+		help()
+		os.exit(0)
+	else
+		table.insert(to_cat, arg[i])
+	end
+end
+
+
+for i = 1, #to_cat do
+	cat(to_cat[i])
 end
 

@@ -42,12 +42,29 @@ if #arg < 1 then
 	os.exit()
 end
 
+
+function help()
+	print("Usage: ls [-1Aal] [directory]")
+	print("Display the contents of the specified directory or the current directory if not specified")
+	print("Options:")
+	print("  -1    display 1 file per line")
+	print("  -a    display all files in directory")
+	print("  -A    display almost all files in directory. The same as -a but will not list '.' and '..'")
+	print("  -l    the same as -1")
+end
+
+
 -- names of directories that need to be listed
 dirs_to_list = {}
 
 
 -- handle arguments
-for k, argument in ipairs(arg) do
+for i = 1, #arg do
+	argument = arg[i]
+	if argument == "--help" then
+		help()
+		os.exit(0)
+	end
 	if argument:sub(1,1) == '-' then
 		for i = 2, #argument do
 			arg_letter = argument:sub(i, i)
